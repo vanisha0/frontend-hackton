@@ -1041,6 +1041,11 @@ function loadStudentDashboard() {
             // Update legacy stats (for backward compatibility)
             updateStudentStats(student, latestMarks);
             createStudentDashboardCharts(latestMarks);
+
+            // Create new enhanced charts
+            createStudentGradeDistributionChart(latestMarks);
+            createStudentPerformanceTrendChart(latestMarks);
+            createStudentVsClassChart(latestMarks);
         } else {
             // No marks available - show appropriate message
             showAlert('No performance data available yet. Please check back after your first assessment.', 'info');
@@ -1780,6 +1785,274 @@ function loadSubjectImprovement() {
     }
 
     lucide.createIcons();
+}
+
+// Student Dashboard Chart Functions - Enhanced with New Charts
+function createStudentGradeDistributionChart(studentMarks) {
+    const ctx = document.getElementById('gradeDistributionChart').getContext('2d');
+
+    // Calculate grade distribution for the student's subjects
+    const grades = { 'A+': 0, 'A': 0, 'B+': 0, 'B': 0, 'C+': 0, 'C': 0, 'F': 0 };
+
+    studentMarks.subjects.forEach(subject => {
+        const grade = calculateGrade(subject.percentage);
+        grades[grade]++;
+    });
+
+    const labels = Object.keys(grades).filter(grade => grades[grade] > 0);
+    const data = labels.map(grade => grades[grade]);
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.8)',   // A+
+                    'rgba(34, 197, 94, 0.8)',    // A
+                    'rgba(59, 130, 246, 0.8)',   // B+
+                    'rgba(96, 165, 250, 0.8)',   // B
+                    'rgba(245, 158, 11, 0.8)',   // C+
+                    'rgba(251, 191, 36, 0.8)',   // C
+                    'rgba(239, 68, 68, 0.8)'     // F
+                ],
+                borderColor: [
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(96, 165, 250, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(251, 191, 36, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                borderWidth: 3,
+                hoverOffset: 15
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { usePointStyle: true, padding: 20 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => `${ctx.label}: ${ctx.parsed} subjects`
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Grade Distribution Across Subjects',
+                    font: { size: 16, weight: 'bold' }
+                }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true,
+                duration: 2000,
+                easing: 'easeInOutQuart'
+            }
+        }
+    });
+}
+
+function createStudentPerformanceTrendChart(studentMarks) {
+    const ctx = document.getElementById('performanceTrendChart').getContext('2d');
+
+    // Create simulated trend data based on current performance
+    const assessments = ['Quiz 1', 'Midterm', 'Quiz 2', 'Final', 'Current'];
+    const basePerformance = studentMarks.overallPercentage;
+
+    // Generate trend data with some variation
+    const trendData = [];
+    assessments.forEach((assessment, index) => {
+        if (assessment === 'Current') {
+            trendData.push(basePerformance);
+        } else {
+            // Simulate historical performance with some variation
+            const variation = (Math.random() - 0.5) * 20; // ±10 variation
+            trendData.push(Math.max(0, Math.min(100, basePerformance + variation)));
+        }
+    });
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: assessments,
+            datasets: [{
+                label: 'Performance Trend (%)',
+                data: trendData,
+                borderColor: 'rgba(59, 130, 246, 1)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 4,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3,
+                pointRadius: 8,
+                pointHoverRadius: 10,
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(59, 130, 246, 1)',
+                pointHoverBorderWidth: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: (value) => value + '%',
+                        font: { size: 12, weight: 'bold' }
+                    },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 12, weight: 'bold' }
+                    },
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(59, 130, 246, 0.9)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        label: (ctx) => `Score: ${ctx.parsed.y.toFixed(1)}%`
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Performance Trend Over Time',
+                    font: { size: 16, weight: 'bold' }
+                }
+            },
+            animation: {
+                duration: 2500,
+                easing: 'easeInOutQuart'
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+}
+
+function createStudentVsClassChart(studentMarks) {
+    const ctx = document.getElementById('studentVsClassChart').getContext('2d');
+
+    // Calculate class averages for each subject
+    const allMarks = getMarks();
+    const classAverages = {};
+
+    SUBJECTS.forEach(subject => {
+        const subjectScores = allMarks.map(m => m.subjects.find(s => s.subject === subject)?.percentage || 0).filter(p => p > 0);
+        classAverages[subject] = subjectScores.length > 0 ? subjectScores.reduce((sum, p) => sum + p, 0) / subjectScores.length : 0;
+    });
+
+    // Get student's scores
+    const studentScores = SUBJECTS.map(subject => {
+        const subjectMark = studentMarks.subjects.find(s => s.subject === subject);
+        return subjectMark ? subjectMark.percentage : 0;
+    });
+
+    const classAvgScores = SUBJECTS.map(subject => classAverages[subject]);
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: SUBJECTS.map(s => s.substring(0, 4)),
+            datasets: [
+                {
+                    label: 'Your Score',
+                    data: studentScores,
+                    backgroundColor: 'rgba(59, 130, 246, 0.9)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    hoverBackgroundColor: 'rgba(59, 130, 246, 1)',
+                    hoverBorderWidth: 3
+                },
+                {
+                    label: 'Class Average',
+                    data: classAvgScores,
+                    backgroundColor: 'rgba(156, 163, 175, 0.8)',
+                    borderColor: 'rgba(156, 163, 175, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    hoverBackgroundColor: 'rgba(156, 163, 175, 1)',
+                    hoverBorderWidth: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: (value) => value + '%',
+                        font: { size: 12, weight: 'bold' }
+                    },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 11, weight: 'bold' }
+                    },
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Your Performance vs Class Average',
+                    font: { size: 16, weight: 'bold' }
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: { size: 12, weight: 'bold' }
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutQuart',
+                delay: (context) => context.dataIndex * 150
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
 }
 
 // Sample Data Generation Functions
