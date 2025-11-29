@@ -1,5 +1,5 @@
-// Student Performance Analytics & Reporting System (FEDF-PS29)
-// JavaScript with LocalStorage functionality
+// Edu Track - Student Performance Analytics & Reporting System
+// Advanced JavaScript application with LocalStorage functionality
 
 // Global variables
 const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Geography', 'Computer Science'];
