@@ -2998,7 +2998,7 @@ function generateBubbleAnalysisChart() {
     const students = getStudents();
 
     const bubbleData = marks.map(mark => {
-        const student = students.find(s => s.id === mark.id);
+        const student = students.find(s => s.id === mark.studentId);
         return {
             x: mark.overallPercentage,
             y: Math.floor(75 + Math.random() * 20), // Simulated attendance
