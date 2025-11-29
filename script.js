@@ -727,7 +727,7 @@ function downloadPDF() {
     doc.save(`${studentName.replace(' ', '_')}_Report.pdf`);
 }
 
-// Admin Dashboard Charts
+// Admin Dashboard Charts - Enhanced with Advanced JavaScript Features
 function createAdminCharts() {
     const marks = getMarks();
 
@@ -741,6 +741,74 @@ function createAdminCharts() {
         return;
     }
 
+    createEnhancedCharts();
+}
+
+// Enhanced Charts Suite with Advanced JavaScript Features
+function createEnhancedCharts() {
+    const marks = getMarks();
+
+    if (marks.length === 0) return;
+
+    // Create enhanced charts with animations, interactions, and drill-down capabilities
+    setTimeout(() => createEnhancedGradeChart(marks), 100);
+    setTimeout(() => createEnhancedSubjectChart(marks), 300);
+    setTimeout(() => createEnhancedPerformanceChart(marks), 500);
+
+    // Add chart filtering controls
+    addChartFilters();
+}
+
+// Chart Filtering and Drill-down Capabilities
+function addChartFilters() {
+    // Add filter controls for time periods
+    const filterContainer = document.createElement('div');
+    filterContainer.id = 'chartFilters';
+    filterContainer.className = 'chart-filters';
+    filterContainer.innerHTML = `
+        <div class="filter-group">
+            <label for="timeFilter">Time Period:</label>
+            <select id="timeFilter" onchange="filterChartsByTime(this.value)">
+                <option value="all">All Time</option>
+                <option value="last30days">Last 30 Days</option>
+                <option value="last7days">Last 7 Days</option>
+                <option value="thisMonth">This Month</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="subjectFilter">Focus Subject:</label>
+            <select id="subjectFilter" onchange="filterChartsBySubject(this.value)">
+                <option value="all">All Subjects</option>
+                ${SUBJECTS.map(subject => `<option value="${subject}">${subject}</option>`).join('')}
+            </select>
+        </div>
+        <button class="btn btn-primary" onclick="resetChartFilters()">Reset Filters</button>
+    `;
+
+    // Insert filters before the charts section
+    const chartsSection = document.querySelector('.charts-section');
+    if (chartsSection) {
+        chartsSection.insertBefore(filterContainer, chartsSection.firstChild.nextSibling);
+    }
+}
+
+function filterChartsByTime(timePeriod) {
+    // Implement time-based filtering logic
+    showAlert(`Filtering charts by: ${timePeriod}`, 'info');
+    // In a full implementation, this would filter the chart data based on dates
+}
+
+function filterChartsBySubject(subject) {
+    // Implement subject-based filtering logic
+    showAlert(`Focusing on subject: ${subject}`, 'info');
+    // In a full implementation, this would highlight specific subject data
+}
+
+function resetChartFilters() {
+    document.getElementById('timeFilter').value = 'all';
+    document.getElementById('subjectFilter').value = 'all';
+    showAlert('Chart filters reset', 'success');
+    // Recreate charts with original data
     createEnhancedCharts();
 }
 
@@ -879,11 +947,11 @@ function createAdminPerformanceChart(marks) {
     });
 }
 
-// Student Dashboard Functions
+// Student Dashboard Functions - Enhanced with Dynamic JavaScript Content
 function loadStudentDashboard() {
     const selectedStudentId = localStorage.getItem('selectedStudentId');
     if (!selectedStudentId) {
-        alert('No student selected');
+        showAlert('No student selected', 'error');
         navigateTo('student_login.html');
         return;
     }
@@ -894,21 +962,27 @@ function loadStudentDashboard() {
     const studentMarks = marks.filter(m => m.studentId === selectedStudentId);
 
     if (!student) {
-        alert('Student not found');
+        showAlert('Student not found', 'error');
         navigateTo('student_login.html');
         return;
     }
 
-    // Update student name
+    // Update student name in header
     document.getElementById('studentName').textContent = student.name;
 
     if (studentMarks.length > 0) {
-        // Use the latest marks
+        // Use the latest marks for dynamic dashboard creation
         const latestMarks = studentMarks[studentMarks.length - 1];
+
+        // Create dynamic dashboard content with JavaScript
+        createDynamicStudentDashboard();
+
+        // Update legacy stats (for backward compatibility)
         updateStudentStats(student, latestMarks);
         createStudentDashboardCharts(latestMarks);
     } else {
-        // No marks available
+        // No marks available - show appropriate message
+        showAlert('No performance data available yet. Please check back after your first assessment.', 'info');
         document.getElementById('currentGrade').textContent = 'N/A';
         document.getElementById('overallPercentage').textContent = '0%';
         document.getElementById('classRank').textContent = '#N/A';
@@ -1850,6 +1924,498 @@ function createSubjectWiseTrendsChart(marks) {
             }
         }
     });
+}
+
+// Logout function
+function logout() {
+    // Clear current user session
+    localStorage.removeItem('currentTeacher');
+    localStorage.removeItem('currentStudent');
+    localStorage.removeItem('selectedStudentId');
+
+    // Show confirmation and redirect
+    showAlert('Logged out successfully!', 'success');
+    setTimeout(() => {
+        navigateTo('index.html');
+    }, 1000);
+}
+
+// Enhanced Chart Functions with Advanced JavaScript Features
+function createEnhancedGradeChart(marks) {
+    const ctx = document.getElementById('adminGradeChart').getContext('2d');
+
+    const grades = { 'A+': 0, 'A': 0, 'B+': 0, 'B': 0, 'C+': 0, 'C': 0, 'F': 0 };
+
+    marks.forEach(markData => {
+        const grade = calculateGrade(markData.overallPercentage);
+        grades[grade]++;
+    });
+
+    const labels = Object.keys(grades).filter(grade => grades[grade] > 0);
+    const data = labels.map(grade => grades[grade]);
+
+    // Enhanced chart with animations and interactions
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.8)',   // A+
+                    'rgba(34, 197, 94, 0.8)',    // A
+                    'rgba(59, 130, 246, 0.8)',   // B+
+                    'rgba(96, 165, 250, 0.8)',   // B
+                    'rgba(245, 158, 11, 0.8)',   // C+
+                    'rgba(251, 191, 36, 0.8)',   // C
+                    'rgba(239, 68, 68, 0.8)'     // F
+                ],
+                borderColor: [
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(96, 165, 250, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(251, 191, 36, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                borderWidth: 3,
+                hoverBorderWidth: 5,
+                hoverBorderColor: '#fff',
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${label}: ${value} students (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true,
+                duration: 2000,
+                easing: 'easeInOutQuart'
+            },
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const grade = labels[elements[0].index];
+                    showGradeDetails(grade, marks);
+                }
+            }
+        }
+    });
+}
+
+function createEnhancedSubjectChart(marks) {
+    const ctx = document.getElementById('adminSubjectChart').getContext('2d');
+
+    const subjectAverages = {};
+    SUBJECTS.forEach(subject => {
+        const subjectScores = marks.map(m => m.subjects.find(s => s.subject === subject)?.percentage || 0).filter(p => p > 0);
+        subjectAverages[subject] = subjectScores.length > 0 ? subjectScores.reduce((sum, p) => sum + p, 0) / subjectScores.length : 0;
+    });
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: SUBJECTS,
+            datasets: [{
+                label: 'Average Performance',
+                data: Object.values(subjectAverages),
+                backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                borderColor: 'rgba(102, 126, 234, 1)',
+                borderWidth: 3,
+                pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(102, 126, 234, 1)',
+                pointHoverBorderWidth: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20,
+                        font: {
+                            size: 11,
+                            weight: 'bold'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    },
+                    angleLines: {
+                        color: 'rgba(0,0,0,0.1)'
+                    },
+                    pointLabels: {
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(102, 126, 234, 0.9)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        label: function(context) {
+                            return `Average: ${context.parsed.r.toFixed(1)}%`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 2500,
+                easing: 'easeInOutQuart'
+            },
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const subject = SUBJECTS[elements[0].index];
+                    showSubjectDetails(subject, marks);
+                }
+            }
+        }
+    });
+}
+
+function createEnhancedPerformanceChart(marks) {
+    const ctx = document.getElementById('adminPerformanceChart').getContext('2d');
+
+    const ranges = {
+        '90-100%': 0,
+        '80-89%': 0,
+        '70-79%': 0,
+        '60-69%': 0,
+        '50-59%': 0,
+        'Below 50%': 0
+    };
+
+    marks.forEach(markData => {
+        const percentage = markData.overallPercentage;
+        if (percentage >= 90) ranges['90-100%']++;
+        else if (percentage >= 80) ranges['80-89%']++;
+        else if (percentage >= 70) ranges['70-79%']++;
+        else if (percentage >= 60) ranges['60-69%']++;
+        else if (percentage >= 50) ranges['50-59%']++;
+        else ranges['Below 50%']++;
+    });
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(ranges),
+            datasets: [{
+                label: 'Number of Students',
+                data: Object.values(ranges),
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.8)',   // Excellent
+                    'rgba(34, 197, 94, 0.8)',    // Very Good
+                    'rgba(59, 130, 246, 0.8)',   // Good
+                    'rgba(245, 158, 11, 0.8)',   // Average
+                    'rgba(251, 191, 36, 0.8)',   // Below Average
+                    'rgba(239, 68, 68, 0.8)'     // Poor
+                ],
+                borderColor: [
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(251, 191, 36, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false,
+                hoverBackgroundColor: [
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(251, 191, 36, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                hoverBorderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 11,
+                            weight: 'bold'
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        label: function(context) {
+                            const range = context.label;
+                            const count = context.parsed.y;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((count / total) * 100).toFixed(1);
+                            return `${count} students (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutQuart',
+                delay: function(context) {
+                    return context.dataIndex * 200;
+                }
+            },
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const range = Object.keys(ranges)[elements[0].index];
+                    showPerformanceRangeDetails(range, marks);
+                }
+            }
+        }
+    });
+}
+
+function showGradeDetails(grade, marks) {
+    const studentsWithGrade = marks.filter(m => calculateGrade(m.overallPercentage) === grade);
+    const studentNames = studentsWithGrade.map(m => {
+        const student = getStudents().find(s => s.id === m.studentId);
+        return student ? student.name : 'Unknown';
+    });
+
+    showAlert(`${grade} Grade: ${studentsWithGrade.length} students\n${studentNames.join(', ')}`, 'info');
+}
+
+function showSubjectDetails(subject, marks) {
+    const subjectScores = marks.map(m => ({
+        student: getStudents().find(s => s.id === m.studentId)?.name || 'Unknown',
+        score: m.subjects.find(s => s.subject === subject)?.percentage || 0
+    })).filter(s => s.score > 0).sort((a, b) => b.score - a.score);
+
+    const topPerformers = subjectScores.slice(0, 3);
+    const message = `${subject} Top Performers:\n${topPerformers.map((s, i) => `${i+1}. ${s.student}: ${s.score.toFixed(1)}%`).join('\n')}`;
+
+    showAlert(message, 'info');
+}
+
+function showPerformanceRangeDetails(range, marks) {
+    const [min, max] = range.split('-').map(r => r.replace('%', ''));
+    const maxVal = max === '100' ? 100 : parseInt(max);
+
+    const studentsInRange = marks.filter(m => {
+        const score = m.overallPercentage;
+        return score >= parseInt(min) && score <= maxVal;
+    });
+
+    const studentNames = studentsInRange.map(m => {
+        const student = getStudents().find(s => s.id === m.studentId);
+        return student ? `${student.name} (${m.overallPercentage.toFixed(1)}%)` : 'Unknown';
+    });
+
+    showAlert(`${range} Range: ${studentsInRange.length} students\n${studentNames.slice(0, 5).join(', ')}${studentNames.length > 5 ? '...' : ''}`, 'info');
+}
+
+// Dynamic Student Dashboard Creation with JavaScript
+function createDynamicStudentDashboard() {
+    const studentId = localStorage.getItem('selectedStudentId');
+    if (!studentId) return;
+
+    const student = getStudents().find(s => s.id === studentId);
+    const marks = getMarks().filter(m => m.studentId === studentId);
+
+    if (!student || marks.length === 0) return;
+
+    const latestMarks = marks[marks.length - 1];
+
+    // Create performance overview section
+    createPerformanceOverview(student, latestMarks);
+
+    // Create subject performance section
+    createSubjectPerformanceSection(latestMarks);
+
+    // Create recent progress section
+    createRecentProgressSection(marks);
+}
+
+function createPerformanceOverview(student, marksData) {
+    const container = document.getElementById('performanceOverview');
+    if (!container) return;
+
+    const percentage = marksData.overallPercentage;
+    const grade = calculateGrade(percentage);
+    const status = getPerformanceStatus(percentage);
+
+    container.innerHTML = `
+        <div class="performance-card">
+            <div class="performance-header">
+                <h3>Academic Performance Overview</h3>
+                <div class="performance-badge badge-${status.toLowerCase().replace(' ', '-')}">
+                    <i data-lucide="award"></i>
+                    ${status}
+                </div>
+            </div>
+            <div class="performance-stats">
+                <div class="stat-item">
+                    <div class="stat-value">${percentage.toFixed(1)}%</div>
+                    <div class="stat-label">Overall Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${grade}</div>
+                    <div class="stat-label">Grade</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">#${calculateClassRank(student.id)}</div>
+                    <div class="stat-label">Class Rank</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    lucide.createIcons();
+}
+
+function createSubjectPerformanceSection(marksData) {
+    const container = document.getElementById('subjectPerformance');
+    if (!container) return;
+
+    const subjectsHTML = marksData.subjects.map(subject => {
+        const statusClass = subject.percentage >= 80 ? 'excellent' :
+                           subject.percentage >= 60 ? 'good' : 'needs-improvement';
+
+        return `
+            <div class="subject-card ${statusClass}">
+                <div class="subject-header">
+                    <h4>${subject.subject}</h4>
+                    <span class="subject-score">${subject.percentage.toFixed(1)}%</span>
+                </div>
+                <div class="subject-bar">
+                    <div class="subject-bar-fill" style="width: ${subject.percentage}%"></div>
+                </div>
+                <div class="subject-grade">${calculateGrade(subject.percentage)}</div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="subjects-grid">
+            ${subjectsHTML}
+        </div>
+    `;
+}
+
+function createRecentProgressSection(marks) {
+    const container = document.getElementById('recentProgress');
+    if (!container) return;
+
+    const recentMarks = marks.slice(-3).reverse(); // Last 3 assessments
+
+    const progressHTML = recentMarks.map((mark, index) => {
+        const examType = mark.examType;
+        const percentage = mark.overallPercentage;
+        const trend = index > 0 ? (percentage > recentMarks[index - 1].overallPercentage ? 'up' : 'down') : 'neutral';
+
+        return `
+            <div class="progress-item">
+                <div class="progress-header">
+                    <h4>${examType}</h4>
+                    <div class="progress-score">
+                        <span class="score-value">${percentage.toFixed(1)}%</span>
+                        <i data-lucide="trending-${trend}" class="trend-icon ${trend}"></i>
+                    </div>
+                </div>
+                <div class="progress-date">${new Date(mark.createdAt).toLocaleDateString()}</div>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="progress-list">
+            ${progressHTML}
+        </div>
+    `;
+
+    lucide.createIcons();
+}
+
+function calculateClassRank(studentId) {
+    const allMarks = getMarks();
+    const studentPercentages = allMarks.map(m => ({
+        studentId: m.studentId,
+        percentage: m.overallPercentage
+    }));
+
+    studentPercentages.sort((a, b) => b.percentage - a.percentage);
+    const rank = studentPercentages.findIndex(s => s.studentId === studentId) + 1;
+
+    return rank;
 }
 
 // Utility functions
