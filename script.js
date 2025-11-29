@@ -47,7 +47,7 @@ function getMarks() {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.MARKS)) || [];
 }
 
-function saveMarks(marks) {
+function saveMarksToStorage(marks) {
     localStorage.setItem(STORAGE_KEYS.MARKS, JSON.stringify(marks));
 }
 
@@ -1868,7 +1868,7 @@ function generateSampleMarks() {
         });
     });
 
-    saveMarks(marks);
+    saveMarksToStorage(marks);
 }
 
 // Enhanced Chart Data with Better Sample Data
