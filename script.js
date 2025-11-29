@@ -949,43 +949,77 @@ function createAdminPerformanceChart(marks) {
 
 // Student Dashboard Functions - Enhanced with Dynamic JavaScript Content
 function loadStudentDashboard() {
-    const selectedStudentId = localStorage.getItem('selectedStudentId');
-    if (!selectedStudentId) {
-        showAlert('No student selected', 'error');
-        navigateTo('student_login.html');
-        return;
-    }
+    try {
+        // Generate sample data if needed
+        generateSampleData();
 
-    const students = getStudents();
-    const marks = getMarks();
-    const student = students.find(s => s.id === selectedStudentId);
-    const studentMarks = marks.filter(m => m.studentId === selectedStudentId);
+        const selectedStudentId = localStorage.getItem('selectedStudentId');
+        if (!selectedStudentId) {
+            console.error('No student ID found in localStorage');
+            showAlert('No student selected. Please login first.', 'error');
+            setTimeout(() => navigateTo('student_login.html'), 2000);
+            return;
+        }
 
-    if (!student) {
-        showAlert('Student not found', 'error');
-        navigateTo('student_login.html');
-        return;
-    }
+        const students = getStudents();
+        const marks = getMarks();
 
-    // Update student name in header
-    document.getElementById('studentName').textContent = student.name;
+        if (students.length === 0) {
+            console.error('No students found in database');
+            showAlert('No student data available. Please contact administrator.', 'error');
+            return;
+        }
 
-    if (studentMarks.length > 0) {
-        // Use the latest marks for dynamic dashboard creation
-        const latestMarks = studentMarks[studentMarks.length - 1];
+        const student = students.find(s => s.id === selectedStudentId);
+        if (!student) {
+            console.error('Student not found:', selectedStudentId);
+            showAlert('Student not found. Using first available student.', 'warning');
+            // Use first available student
+            const firstStudent = students[0];
+            localStorage.setItem('selectedStudentId', firstStudent.id);
+            setTimeout(() => loadStudentDashboard(), 100);
+            return;
+        }
 
-        // Create dynamic dashboard content with JavaScript
-        createDynamicStudentDashboard();
+        const studentMarks = marks.filter(m => m.studentId === selectedStudentId);
 
-        // Update legacy stats (for backward compatibility)
-        updateStudentStats(student, latestMarks);
-        createStudentDashboardCharts(latestMarks);
-    } else {
-        // No marks available - show appropriate message
-        showAlert('No performance data available yet. Please check back after your first assessment.', 'info');
-        document.getElementById('currentGrade').textContent = 'N/A';
-        document.getElementById('overallPercentage').textContent = '0%';
-        document.getElementById('classRank').textContent = '#N/A';
+        // Update student name in header
+        const studentNameElement = document.getElementById('studentName');
+        if (studentNameElement) {
+            studentNameElement.textContent = student.name;
+        }
+
+        if (studentMarks.length > 0) {
+            // Use the latest marks for dynamic dashboard creation
+            const latestMarks = studentMarks[studentMarks.length - 1];
+
+            // Create dynamic dashboard content with JavaScript
+            createDynamicStudentDashboard();
+
+            // Update legacy stats (for backward compatibility)
+            updateStudentStats(student, latestMarks);
+            createStudentDashboardCharts(latestMarks);
+        } else {
+            // No marks available - show appropriate message
+            showAlert('No performance data available yet. Please check back after your first assessment.', 'info');
+
+            // Create basic dashboard structure even without marks
+            createDynamicStudentDashboard();
+
+            // Set default values
+            const currentGradeEl = document.getElementById('currentGrade');
+            const overallPercentageEl = document.getElementById('overallPercentage');
+            const classRankEl = document.getElementById('classRank');
+
+            if (currentGradeEl) currentGradeEl.textContent = 'N/A';
+            if (overallPercentageEl) overallPercentageEl.textContent = '0%';
+            if (classRankEl) classRankEl.textContent = '#N/A';
+        }
+
+        console.log('Student dashboard loaded successfully for:', student.name);
+    } catch (error) {
+        console.error('Error in loadStudentDashboard:', error);
+        showAlert('Error loading dashboard. Please try refreshing the page.', 'error');
     }
 }
 

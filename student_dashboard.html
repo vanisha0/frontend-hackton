@@ -92,7 +92,35 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();
-            loadStudentDashboard();
+
+            // Ensure sample data exists and set default student
+            generateSampleData();
+
+            // Check if student is logged in
+            let selectedStudentId = localStorage.getItem('selectedStudentId');
+            const currentStudent = localStorage.getItem('currentStudent');
+
+            if (!selectedStudentId && !currentStudent) {
+                // For demo purposes, set a default student if none is selected
+                const students = getStudents();
+                if (students.length > 0) {
+                    selectedStudentId = students[0].id; // Use first available student
+                    localStorage.setItem('selectedStudentId', selectedStudentId);
+                    console.log('No student selected, using first available student:', selectedStudentId);
+                } else {
+                    console.error('No students available in database');
+                    showAlert('No student data available. Please contact administrator.', 'error');
+                    return;
+                }
+            }
+
+            // Load the dashboard
+            try {
+                loadStudentDashboard();
+            } catch (error) {
+                console.error('Error loading student dashboard:', error);
+                showAlert('Error loading dashboard. Please try again.', 'error');
+            }
         });
 
         function viewDetailedReport() {
