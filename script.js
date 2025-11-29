@@ -214,58 +214,100 @@ function createSubjectInputs() {
 }
 
 function saveMarks() {
-    const studentId = document.getElementById('studentSelect').value;
-    const examType = document.getElementById('examType').value;
+    try {
+        const studentId = document.getElementById('studentSelect').value;
+        const examType = document.getElementById('examType').value;
 
-    if (!studentId || !examType) {
-        alert('Please select a student and exam type');
-        return;
-    }
-
-    const marks = getMarks();
-    const subjectMarks = [];
-
-    SUBJECTS.forEach(subject => {
-        const obtainedId = subject.toLowerCase().replace(' ', '') + 'Obtained';
-        const totalId = subject.toLowerCase().replace(' ', '') + 'Total';
-
-        const obtained = parseFloat(document.getElementById(obtainedId).value);
-        const total = parseFloat(document.getElementById(totalId).value);
-
-        if (obtained > total) {
-            alert(`Marks obtained cannot be greater than total marks for ${subject}`);
+        if (!studentId || !examType) {
+            showAlert('Please select a student and exam type', 'error');
             return;
         }
 
-        subjectMarks.push({
-            subject: subject,
-            obtained: obtained,
-            total: total,
-            percentage: (obtained / total) * 100
-        });
-    });
+        const marks = getMarks();
+        const subjectMarks = [];
 
-    // Check if marks already exist for this student and exam type
-    const existingIndex = marks.findIndex(m => m.studentId === studentId && m.examType === examType);
-    const marksData = {
-        studentId: studentId,
-        examType: examType,
-        subjects: subjectMarks,
-        totalObtained: subjectMarks.reduce((sum, s) => sum + s.obtained, 0),
-        totalPossible: subjectMarks.reduce((sum, s) => sum + s.total, 0),
-        overallPercentage: (subjectMarks.reduce((sum, s) => sum + s.obtained, 0) / subjectMarks.reduce((sum, s) => sum + s.total, 0)) * 100,
-        createdAt: new Date().toISOString()
-    };
+        // Validate all subject inputs
+        for (let subject of SUBJECTS) {
+            const obtainedId = subject.toLowerCase().replace(' ', '') + 'Obtained';
+            const totalId = subject.toLowerCase().replace(' ', '') + 'Total';
 
-    if (existingIndex !== -1) {
-        marks[existingIndex] = marksData;
-    } else {
-        marks.push(marksData);
+            const obtainedInput = document.getElementById(obtainedId);
+            const totalInput = document.getElementById(totalId);
+
+            if (!obtainedInput || !totalInput) {
+                showAlert(`Input fields for ${subject} are missing. Please refresh the page.`, 'error');
+                return;
+            }
+
+            const obtainedValue = obtainedInput.value.trim();
+            const totalValue = totalInput.value.trim();
+
+            if (obtainedValue === '' || totalValue === '') {
+                showAlert(`Please fill in marks for ${subject}`, 'error');
+                obtainedInput.focus();
+                return;
+            }
+
+            const obtained = parseFloat(obtainedValue);
+            const total = parseFloat(totalValue);
+
+            if (isNaN(obtained) || isNaN(total)) {
+                showAlert(`Invalid marks format for ${subject}. Please enter valid numbers.`, 'error');
+                obtainedInput.focus();
+                return;
+            }
+
+            if (obtained < 0 || total <= 0) {
+                showAlert(`Marks cannot be negative and total marks must be greater than 0 for ${subject}`, 'error');
+                obtainedInput.focus();
+                return;
+            }
+
+            if (obtained > total) {
+                showAlert(`Marks obtained (${obtained}) cannot be greater than total marks (${total}) for ${subject}`, 'error');
+                obtainedInput.focus();
+                return;
+            }
+
+            subjectMarks.push({
+                subject: subject,
+                obtained: obtained,
+                total: total,
+                percentage: (obtained / total) * 100
+            });
+        }
+
+        // Check if marks already exist for this student and exam type
+        const existingIndex = marks.findIndex(m => m.studentId === studentId && m.examType === examType);
+        const marksData = {
+            studentId: studentId,
+            examType: examType,
+            subjects: subjectMarks,
+            totalObtained: subjectMarks.reduce((sum, s) => sum + s.obtained, 0),
+            totalPossible: subjectMarks.reduce((sum, s) => sum + s.total, 0),
+            overallPercentage: (subjectMarks.reduce((sum, s) => sum + s.obtained, 0) / subjectMarks.reduce((sum, s) => sum + s.total, 0)) * 100,
+            createdAt: new Date().toISOString()
+        };
+
+        if (existingIndex !== -1) {
+            marks[existingIndex] = marksData;
+            showAlert('Marks updated successfully!', 'success');
+        } else {
+            marks.push(marksData);
+            showAlert('Marks saved successfully!', 'success');
+        }
+
+        saveMarks(marks);
+
+        // Redirect after a short delay
+        setTimeout(() => {
+            navigateTo('admin_dashboard.html');
+        }, 1500);
+
+    } catch (error) {
+        console.error('Error saving marks:', error);
+        showAlert('An error occurred while saving marks. Please try again.', 'error');
     }
-
-    saveMarks(marks);
-    alert('Marks saved successfully!');
-    navigateTo('admin_dashboard.html');
 }
 
 // Dashboard Functions

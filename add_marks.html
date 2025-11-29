@@ -59,14 +59,37 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Add Marks page loaded');
             lucide.createIcons();
+
+            // Load students first
             loadStudentsForMarks();
+
+            // Create subject input fields
             createSubjectInputs();
 
+            // Set up form submission
             const form = document.getElementById('addMarksForm');
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveMarks();
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log('Form submitted, calling saveMarks()');
+                    saveMarks();
+                });
+                console.log('Form event listener attached');
+            } else {
+                console.error('Form with id "addMarksForm" not found');
+            }
+
+            // Add input validation
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const value = parseFloat(this.value);
+                    if (value < 0) {
+                        this.value = 0;
+                    }
+                });
             });
         });
     </script>
