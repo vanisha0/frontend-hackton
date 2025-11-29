@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Analytics & Reporting System (FEDF-PS29)</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="main-title">Student Performance Analytics & Reporting System</h1>
+            <p class="subtitle">FEDF-PS29</p>
+        </header>
+
+        <main class="main-content">
+            <div class="welcome-card">
+                <h2>Welcome to the System</h2>
+                <p>Please select your role to continue</p>
+
+                <div class="role-selection">
+                    <div class="role-card admin-card" onclick="navigateTo('teacher_login.html')">
+                        <div class="role-icon">
+                            <i data-lucide="user-cog"></i>
+                        </div>
+                        <h3>Teacher</h3>
+                        <p>Manage students, enter marks, generate reports</p>
+                        <button class="btn btn-primary">Teacher Login</button>
+                    </div>
+
+                    <div class="role-card student-card" onclick="navigateTo('student_login.html')">
+                        <div class="role-icon">
+                            <i data-lucide="graduation-cap"></i>
+                        </div>
+                        <h3>Student</h3>
+                        <p>View your reports and progress</p>
+                        <button class="btn btn-secondary">Student Login</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Student Performance Analytics & Reporting System (FEDF-PS29)</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

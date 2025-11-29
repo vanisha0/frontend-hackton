@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Registration - Student Performance Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <i data-lucide="user-plus" class="auth-icon"></i>
+                <h1>Teacher Registration</h1>
+                <p>Create your teacher account</p>
+            </div>
+
+            <form id="teacherRegisterForm" class="auth-form">
+                <div class="form-group">
+                    <label for="teacherName">Full Name</label>
+                    <input type="text" id="teacherName" name="name" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="teacherEmail">Email</label>
+                    <input type="email" id="teacherEmail" name="email" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="teacherPassword">Password</label>
+                    <input type="password" id="teacherPassword" name="password" required placeholder="Create a password">
+                </div>
+
+                <div class="form-group">
+                    <label for="teacherConfirmPassword">Confirm Password</label>
+                    <input type="password" id="teacherConfirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">Register</button>
+            </form>
+
+            <div class="auth-links">
+                <p>Already have an account? <a href="#" onclick="navigateTo('teacher_login.html')">Login here</a></p>
+                <p><a href="#" onclick="navigateTo('index.html')">← Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+
+            const form = document.getElementById('teacherRegisterForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                registerTeacher();
+            });
+        });
+    </script>
+</body>
+</html>

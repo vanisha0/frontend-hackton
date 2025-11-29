@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Improvement - Student Performance Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i data-lucide="target"></i>
+            <span>Subject Improvement</span>
+        </div>
+        <div class="nav-links">
+            <button class="btn btn-outline" onclick="navigateTo('student_dashboard.html')">Back to Dashboard</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Subject Improvement Guide</h1>
+            <p>Personalized tips to improve your weak subjects</p>
+        </div>
+
+        <div id="weakSubjectsAlert" class="alert alert-warning" style="display: none;">
+            <i data-lucide="alert-triangle"></i>
+            <div>
+                <h3>Weak Subjects Detected</h3>
+                <p>You have subjects that need improvement. Check the recommendations below.</p>
+            </div>
+        </div>
+
+        <div id="strongSubjectsAlert" class="alert alert-success" style="display: none;">
+            <i data-lucide="check-circle"></i>
+            <div>
+                <h3>Great Performance!</h3>
+                <p>All your subjects are performing well. Keep up the good work!</p>
+            </div>
+        </div>
+
+        <div id="improvementContainer" class="improvement-container">
+            <!-- Improvement recommendations will be populated here -->
+        </div>
+
+        <div class="study-resources">
+            <h2>📚 Study Resources & Tips</h2>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i data-lucide="book-open"></i>
+                    </div>
+                    <h3>Practice Regularly</h3>
+                    <p>Dedicate specific time each day for difficult subjects. Consistency is key to improvement.</p>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <h3>Seek Help</h3>
+                    <p>Don't hesitate to ask teachers or classmates for clarification on difficult topics.</p>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i data-lucide="brain"></i>
+                    </div>
+                    <h3>Active Learning</h3>
+                    <p>Use flashcards, mind maps, and teaching others to reinforce your understanding.</p>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i data-lucide="target"></i>
+                    </div>
+                    <h3>Set Goals</h3>
+                    <p>Set achievable short-term goals and celebrate small victories along the way.</p>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <h3>Time Management</h3>
+                    <p>Create a study schedule and stick to it. Avoid last-minute cramming.</p>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i data-lucide="refresh-cw"></i>
+                    </div>
+                    <h3>Review Regularly</h3>
+                    <p>Regular revision helps retain information and identify weak areas early.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            loadSubjectImprovement();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Marks - Student Performance Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i data-lucide="edit-3"></i>
+            <span>Add Marks</span>
+        </div>
+        <div class="nav-links">
+            <button class="btn btn-outline" onclick="navigateTo('admin_dashboard.html')">Back to Dashboard</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Add/Update Student Marks</h1>
+                <p>Enter marks for different subjects</p>
+            </div>
+
+            <form id="addMarksForm" class="form">
+                <div class="form-group">
+                    <label for="studentSelect">Select Student</label>
+                    <select id="studentSelect" name="studentId" required>
+                        <option value="">Choose a student</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="examType">Exam Type</label>
+                    <select id="examType" name="examType" required>
+                        <option value="">Select exam type</option>
+                        <option value="midterm">Midterm Exam</option>
+                        <option value="final">Final Exam</option>
+                        <option value="quiz">Quiz</option>
+                        <option value="assignment">Assignment</option>
+                    </select>
+                </div>
+
+                <div id="marksContainer">
+                    <!-- Dynamic subject inputs will be added here -->
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="navigateTo('admin_dashboard.html')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Marks</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            loadStudentsForMarks();
+            createSubjectInputs();
+
+            const form = document.getElementById('addMarksForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveMarks();
+            });
+        });
+    </script>
+</body>
+</html>

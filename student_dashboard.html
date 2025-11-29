@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Student Performance Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i data-lucide="graduation-cap"></i>
+            <span>Student Dashboard</span>
+        </div>
+        <div class="nav-links">
+            <button class="btn btn-outline" onclick="navigateTo('student_login.html')">Switch Student</button>
+            <button class="btn btn-outline" onclick="navigateTo('index.html')">Home</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Welcome, <span id="studentName">Student</span>!</h1>
+            <p>Here's your academic performance overview</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card" onclick="viewDetailedReport()">
+                <div class="card-icon">
+                    <i data-lucide="file-text"></i>
+                </div>
+                <h3>View Report</h3>
+                <p>Detailed performance analysis with charts</p>
+            </div>
+
+            <div class="dashboard-card" onclick="downloadPDF()">
+                <div class="card-icon">
+                    <i data-lucide="download"></i>
+                </div>
+                <h3>Download PDF</h3>
+                <p>Get your complete report as PDF</p>
+            </div>
+
+            <div class="dashboard-card" onclick="navigateTo('subject_improvement.html')">
+                <div class="card-icon">
+                    <i data-lucide="target"></i>
+                </div>
+                <h3>Subject Improvement</h3>
+                <p>Get personalized tips for weak subjects</p>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-icon">
+                    <i data-lucide="trophy"></i>
+                </div>
+                <h3>Achievements</h3>
+                <p>View your academic achievements</p>
+            </div>
+        </div>
+
+        <!-- Performance Badge -->
+        <div class="performance-badge-section">
+            <h2>Your Performance Badge</h2>
+            <div id="performanceBadge" class="badge-container">
+                <!-- Badge will be populated here -->
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2>Quick Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="currentGrade">N/A</div>
+                    <div class="stat-label">Current Grade</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="overallPercentage">0%</div>
+                    <div class="stat-label">Overall Percentage</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="classRank">#0</div>
+                    <div class="stat-label">Class Rank</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <h2>Performance Overview</h2>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Subject Performance</h3>
+                    <div class="chart-container">
+                        <canvas id="subjectChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Recent Progress</h3>
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i data-lucide="check-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>Marks Updated</h4>
+                        <p>Your latest assessment marks have been added</p>
+                        <span class="activity-time">2 days ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i data-lucide="file-text"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>Report Generated</h4>
+                        <p>Your performance report was viewed</p>
+                        <span class="activity-time">1 week ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            loadStudentDashboard();
+        });
+
+        function viewDetailedReport() {
+            navigateTo('view_report.html');
+        }
+    </script>
+</body>
+</html>

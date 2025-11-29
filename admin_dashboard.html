@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Student Performance Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Admin Dashboard</span>
+        </div>
+        <div class="nav-links">
+            <button class="btn btn-outline" onclick="navigateTo('index.html')">Home</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Teacher Dashboard</h1>
+            <p>Manage students and generate performance reports</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card" onclick="navigateTo('add_student.html')">
+                <div class="card-icon">
+                    <i data-lucide="user-plus"></i>
+                </div>
+                <h3>Add Student</h3>
+                <p>Add new students to the system</p>
+            </div>
+
+            <div class="dashboard-card" onclick="navigateTo('add_marks.html')">
+                <div class="card-icon">
+                    <i data-lucide="edit-3"></i>
+                </div>
+                <h3>Add Marks</h3>
+                <p>Enter or update student marks</p>
+            </div>
+
+            <div class="dashboard-card" onclick="navigateTo('student_list.html')">
+                <div class="card-icon">
+                    <i data-lucide="users"></i>
+                </div>
+                <h3>View Students</h3>
+                <p>View all registered students</p>
+            </div>
+
+            <div class="dashboard-card" onclick="navigateTo('analytics_dashboard.html')">
+                <div class="card-icon">
+                    <i data-lucide="bar-chart-3"></i>
+                </div>
+                <h3>Analytics</h3>
+                <p>Class performance insights</p>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2>Class Overview & Analytics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-label">Total Students</div>
+                    <div class="stat-trend" id="studentsTrend">↗️ +2 this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalSubjects">6</div>
+                    <div class="stat-label">Subjects</div>
+                    <div class="stat-trend">📚 Core curriculum</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgPerformance">0%</div>
+                    <div class="stat-label">Class Average</div>
+                    <div class="stat-trend" id="performanceTrend">↗️ +5.2% improvement</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="topPerformer">N/A</div>
+                    <div class="stat-label">Top Performer</div>
+                    <div class="stat-trend" id="topScore">95.8% average</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="weakSubjectsCount">0</div>
+                    <div class="stat-label">Weak Subjects</div>
+                    <div class="stat-trend" id="weakSubjectsTrend">⚠️ Need attention</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="attendanceRate">0%</div>
+                    <div class="stat-label">Avg Attendance</div>
+                    <div class="stat-trend" id="attendanceTrend">📈 Above target</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <h2>Class Analytics</h2>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Grade Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="adminGradeChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Subject Performance</h3>
+                    <div class="chart-container">
+                        <canvas id="adminSubjectChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Performance Overview</h3>
+                    <div class="chart-container">
+                        <canvas id="adminPerformanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Student vs Class Average</h3>
+                    <div class="chart-container">
+                        <canvas id="studentVsClassChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Subject Trends</h3>
+                    <div class="chart-container">
+                        <canvas id="subjectTrendsChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Performance Insights</h3>
+                    <div class="insight-card">
+                        <h3>Class Health Score</h3>
+                        <div class="insight-value" id="classHealthScore">85%</div>
+                        <p>Overall class performance indicator</p>
+                    </div>
+                    <div class="insight-card">
+                        <h3>Improvement Areas</h3>
+                        <div class="insight-value" id="improvementAreas">2</div>
+                        <p>Subjects needing attention</p>
+                    </div>
+                    <div class="insight-card">
+                        <h3>Top Performers</h3>
+                        <div class="insight-value" id="topPerformersCount">3</div>
+                        <p>Students excelling consistently</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
