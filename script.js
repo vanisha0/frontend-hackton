@@ -297,7 +297,7 @@ function saveMarks() {
             showAlert('Marks saved successfully!', 'success');
         }
 
-        saveMarks(marks);
+        saveMarksToStorage(marks);
 
         // Redirect after a short delay
         setTimeout(() => {
