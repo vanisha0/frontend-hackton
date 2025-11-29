@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Analytics - Edu Track</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Edu Track - Advanced Analytics</span>
+        </div>
+        <div class="nav-links">
+            <button class="btn btn-outline" onclick="navigateTo('admin_dashboard.html')">Dashboard</button>
+            <button class="btn btn-danger" onclick="logout()">
+                <i data-lucide="log-out"></i>
+                Logout
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="analytics-header">
+            <h1>Advanced Analytics Dashboard</h1>
+            <p>Comprehensive performance insights with interactive visualizations</p>
+        </div>
+
+        <!-- Analytics Tabs -->
+        <div class="analytics-tabs">
+            <button class="tab-btn active" onclick="switchTab('class-analytics')">
+                <i data-lucide="users"></i>
+                Class Analytics
+            </button>
+            <button class="tab-btn" onclick="switchTab('grade-distribution')">
+                <i data-lucide="pie-chart"></i>
+                Grade Distribution
+            </button>
+            <button class="tab-btn" onclick="switchTab('subject-performance')">
+                <i data-lucide="book-open"></i>
+                Subject Performance
+            </button>
+            <button class="tab-btn" onclick="switchTab('performance-overview')">
+                <i data-lucide="trending-up"></i>
+                Performance Overview
+            </button>
+            <button class="tab-btn" onclick="switchTab('student-vs-class')">
+                <i data-lucide="bar-chart-3"></i>
+                Student vs Class
+            </button>
+            <button class="tab-btn" onclick="switchTab('subject-trends')">
+                <i data-lucide="activity"></i>
+                Subject Trends
+            </button>
+        </div>
+
+        <!-- Class Analytics Tab -->
+        <div id="class-analytics" class="tab-content active">
+            <h2>Class Analytics Overview</h2>
+            <div class="charts-grid-2col">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="grid-3x3"></i> Performance Heatmap</h3>
+                        <div class="chart-controls">
+                            <select id="heatmapSubject" onchange="updateHeatmapChart()">
+                                <option value="all">All Subjects</option>
+                                ${SUBJECTS.map(s => `<option value="${s}">${s}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <canvas id="heatmapChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="pie-chart"></i> Pass vs Fail Distribution</h3>
+                    </div>
+                    <canvas id="donutChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="bar-chart-horizontal"></i> Score Ranges</h3>
+                    </div>
+                    <canvas id="horizontalBarChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="bubble-chart"></i> Performance Bubble Analysis</h3>
+                    </div>
+                    <canvas id="bubbleChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="layers"></i> Performance Stacked by Subject</h3>
+                    </div>
+                    <canvas id="stackedColumnChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="activity"></i> Multi-Axis Performance</h3>
+                    </div>
+                    <canvas id="multiAxisChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grade Distribution Tab -->
+        <div id="grade-distribution" class="tab-content">
+            <h2>Grade Distribution Analysis</h2>
+            <div class="charts-grid-2col">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="pie-chart"></i> Grade Distribution (Doughnut)</h3>
+                    </div>
+                    <canvas id="gradeDoughnutChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="bar-chart-3"></i> Grade Counts by Section</h3>
+                    </div>
+                    <canvas id="stackedBarChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="radar"></i> Grade Intensity (Polar)</h3>
+                    </div>
+                    <canvas id="polarGradeChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="gauge"></i> Grade Progress Gauges</h3>
+                        <div id="gradeGauges"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject Performance Tab -->
+        <div id="subject-performance" class="tab-content">
+            <h2>Subject Performance Analysis</h2>
+            <div class="charts-grid-2col">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="radar"></i> Subject Performance Radar</h3>
+                    </div>
+                    <canvas id="subjectRadarChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="bar-chart-horizontal"></i> Subject Ranking</h3>
+                    </div>
+                    <canvas id="horizontalPerformanceChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="scatter-chart"></i> Difficulty vs Performance</h3>
+                    </div>
+                    <canvas id="scatterPlotChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="trending-up"></i> Subject Variation Analysis</h3>
+                    </div>
+                    <canvas id="bubbleTrendChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="bar-chart-3"></i> Multi-Class Comparison</h3>
+                    </div>
+                    <canvas id="groupedBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Overview Tab -->
+        <div id="performance-overview" class="tab-content">
+            <h2>Performance Overview Trends</h2>
+            <div class="charts-grid-2col">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="users"></i> Multi-Student Comparison</h3>
+                    </div>
+                    <canvas id="multiLineChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="area-chart"></i> Smoothed Performance Curve</h3>
+                    </div>
+                    <canvas id="areaChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="activity"></i> Spline Performance Curve</h3>
+                    </div>
+                    <canvas id="splineChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="calendar"></i> Timeline Performance Markers</h3>
+                    </div>
+                    <canvas id="timelineChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="graduation-cap"></i> Cohort Progression</h3>
+                    </div>
+                    <canvas id="cohortChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student vs Class Tab -->
+        <div id="student-vs-class" class="tab-content">
+            <h2>Student vs Class Average Analysis</h2>
+            <div class="charts-grid-2col">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="bar-chart-3"></i> Dual-Axis Comparison</h3>
+                    </div>
+                    <canvas id="dualAxisChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="radar"></i> Student vs Class Radar</h3>
+                    </div>
+                    <canvas id="radarComparisonChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="minus"></i> Lollipop Comparison Chart</h3>
+                    </div>
+                    <canvas id="lollipopChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="arrow-left-right"></i> Butterfly Comparison</h3>
+                    </div>
+                    <canvas id="butterflyChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="box"></i> Score Distribution Box Plot</h3>
+                    </div>
+                    <canvas id="boxPlotChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject Trends Tab -->
+        <div id="subject-trends" class="tab-content">
+            <h2>Subject Trends Analysis</h2>
+            <div class="charts-grid-2col">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="calendar"></i> Performance Heatmap</h3>
+                    </div>
+                    <canvas id="trendHeatmapChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="activity"></i> Sparkline Trends</h3>
+                        <div id="sparklineContainer"></div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="trending-up"></i> Moving Average Trends</h3>
+                    </div>
+                    <canvas id="movingAverageChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="zap"></i> Step Line Changes</h3>
+                    </div>
+                    <canvas id="stepLineChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="bar-chart-horizontal"></i> Exam Session Trends</h3>
+                    </div>
+                    <canvas id="verticalLineChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            initializeAdvancedAnalytics();
+        });
+
+        function switchTab(tabId) {
+            // Remove active class from all tabs and content
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Add active class to selected tab and content
+            document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+
+            // Load charts for the selected tab
+            loadTabCharts(tabId);
+        }
+
+        function initializeAdvancedAnalytics() {
+            // Load initial tab (Class Analytics)
+            loadTabCharts('class-analytics');
+        }
+
+        function loadTabCharts(tabId) {
+            const marks = getMarks();
+            if (marks.length === 0) {
+                generateSampleData();
+            }
+
+            switch(tabId) {
+                case 'class-analytics':
+                    generateHeatmapChart();
+                    generateDonutChart();
+                    generateHorizontalBarChart();
+                    generateBubbleAnalysisChart();
+                    generateStackedSubjectChart();
+                    generateMultiAxisChart();
+                    break;
+                case 'grade-distribution':
+                    generateGradeDoughnutChart();
+                    generateStackedBarChart();
+                    generatePolarGradeChart();
+                    generateGradeGauges();
+                    break;
+                case 'subject-performance':
+                    generateRadarPerformanceChart();
+                    generateHorizontalPerformanceBars();
+                    generateScatterPlotChart();
+                    generateBubbleTrendChart();
+                    generateGroupedBarChart();
+                    break;
+                case 'performance-overview':
+                    generateMultiLineComparisonChart();
+                    generateAreaGrowthChart();
+                    generateSplineCurveChart();
+                    generateTimelineChart();
+                    generateCohortProgressionChart();
+                    break;
+                case 'student-vs-class':
+                    generateDualAxisChart();
+                    generateRadarComparisonChart();
+                    generateLollipopComparisonChart();
+                    generateButterflyChart();
+                    generateBoxPlotChart();
+                    break;
+                case 'subject-trends':
+                    generateSubjectTrendHeatmap();
+                    generateSparklineCharts();
+                    generateMovingAverageChart();
+                    generateStepLineChart();
+                    generateVerticalLineChart();
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

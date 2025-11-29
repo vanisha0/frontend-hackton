@@ -70,90 +70,20 @@
                 <p>Personalized study recommendations</p>
             </div>
 
-            <div class="dashboard-card" onclick="navigateTo('subject_improvement.html')">
+            <div class="dashboard-card" onclick="navigateTo('analytics_dashboard.html')">
                 <div class="card-icon">
-                    <i data-lucide="target"></i>
+                    <i data-lucide="bar-chart-3"></i>
                 </div>
-                <h3>Subject Improvement</h3>
-                <p>Get personalized tips for weak subjects</p>
+                <h3>Advanced Analytics</h3>
+                <p>Explore detailed performance analytics</p>
             </div>
 
-            <div class="dashboard-card">
+            <div class="dashboard-card" onclick="logout()">
                 <div class="card-icon">
-                    <i data-lucide="trophy"></i>
+                    <i data-lucide="log-out"></i>
                 </div>
-                <h3>Achievements</h3>
-                <p>View your academic achievements</p>
-            </div>
-        </div>
-
-        <!-- Performance Badge -->
-        <div class="performance-badge-section">
-            <h2>Your Performance Badge</h2>
-            <div id="performanceBadge" class="badge-container">
-                <!-- Badge will be populated here -->
-            </div>
-        </div>
-
-        <div class="stats-section">
-            <h2>Quick Stats</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="currentGrade">N/A</div>
-                    <div class="stat-label">Current Grade</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="overallPercentage">0%</div>
-                    <div class="stat-label">Overall Percentage</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="classRank">#0</div>
-                    <div class="stat-label">Class Rank</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="charts-section">
-            <h2>Performance Overview</h2>
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h3>Subject Performance</h3>
-                    <div class="chart-container">
-                        <canvas id="subjectChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h3>Recent Progress</h3>
-                    <div class="chart-container">
-                        <canvas id="progressChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="recent-activity">
-            <h2>Recent Activity</h2>
-            <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i data-lucide="check-circle"></i>
-                    </div>
-                    <div class="activity-content">
-                        <h4>Marks Updated</h4>
-                        <p>Your latest assessment marks have been added</p>
-                        <span class="activity-time">2 days ago</span>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i data-lucide="file-text"></i>
-                    </div>
-                    <div class="activity-content">
-                        <h4>Report Generated</h4>
-                        <p>Your performance report was viewed</p>
-                        <span class="activity-time">1 week ago</span>
-                    </div>
-                </div>
+                <h3>Logout</h3>
+                <p>Sign out of your account</p>
             </div>
         </div>
     </div>
