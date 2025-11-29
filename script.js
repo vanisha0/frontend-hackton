@@ -1282,6 +1282,7 @@ function loginStudent() {
 
     if (student) {
         localStorage.setItem('currentStudent', JSON.stringify(student));
+        localStorage.setItem('selectedStudentId', student.id); // Also set selectedStudentId for dashboard
         showAlert('Login successful!', 'success');
         setTimeout(() => {
             navigateTo('student_dashboard.html');
